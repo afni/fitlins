@@ -116,6 +116,10 @@ def get_parser():
     g_other.add_argument('-w', '--work-dir', action='store', type=op.abspath,
                          help='path where intermediate results should be stored')
 
+    g_other.add_argument("--estimator", action="store",type=str,
+        help="provide the name of the estimator you wish to use",
+        default=None, choices=["afni", None])
+
     return parser
 
 

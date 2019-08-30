@@ -15,7 +15,7 @@ def init_fitlins_wf(bids_dir, derivatives, out_dir, analysis_level, space,
                     desc=None, model=None, participants=None,
                     ignore=None, force_index=None,
                     smoothing=None,
-                    base_dir=None, name='fitlins_wf'):
+                    base_dir=None, name='fitlins_wf',estimator=None):
     wf = pe.Workflow(name=name, base_dir=base_dir)
 
     # Find the appropriate model file(s)
@@ -83,6 +83,10 @@ def init_fitlins_wf(bids_dir, derivatives, out_dir, analysis_level, space,
                                              for step in model_dict['Steps']):
             raise ValueError(f"Invalid smoothing level {smoothing_level}")
 
+    if estimator == 'afni':
+        from ..interfaces.afni import FirstLevelModel
+    else:
+        from ..interfaces.nistats import FirstLevelModel
     l1_model = pe.MapNode(
         FirstLevelModel(),
         iterfield=['session_info', 'contrast_info', 'bold_file', 'mask_file'],
@@ -218,6 +222,9 @@ def init_fitlins_wf(bids_dir, derivatives, out_dir, analysis_level, space,
         # Squash the results of MapNodes that may have generated multiple maps
         # into single lists.
         # Do the same with corresponding metadata - interface will complain if shapes mismatch
+        if estimator == 'afni':
+            from ..interfaces.afni import MergeAll
+        
         collate = pe.Node(
             MergeAll(['effect_maps', 'variance_maps', 'stat_maps', 'zscore_maps',
                       'pvalue_maps', 'contrast_metadata']),
