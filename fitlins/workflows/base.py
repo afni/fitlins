@@ -9,7 +9,7 @@ from ..interfaces.nistats import FirstLevelModel, SecondLevelModel
 from ..interfaces.visualizations import (
     DesignPlot, DesignCorrelationPlot, ContrastMatrixPlot, GlassBrainPlot)
 from ..interfaces.utils import MergeAll, CollateWithMetadata
-
+from ..interfaces.afni import AFNIMergeAll 
 
 def init_fitlins_wf(bids_dir, derivatives, out_dir, analysis_level, space,
                     desc=None, model=None, participants=None,
@@ -222,14 +222,18 @@ def init_fitlins_wf(bids_dir, derivatives, out_dir, analysis_level, space,
         # Squash the results of MapNodes that may have generated multiple maps
         # into single lists.
         # Do the same with corresponding metadata - interface will complain if shapes mismatch
-        if estimator == 'afni':
-            from ..interfaces.afni import MergeAll
-        
-        collate = pe.Node(
-            MergeAll(['effect_maps', 'variance_maps', 'stat_maps', 'zscore_maps',
-                      'pvalue_maps', 'contrast_metadata']),
-            name='collate_{}'.format(level),
-            run_without_submitting=True)
+        if estimator == "afni":
+            collate = pe.Node(
+                    AFNIMergeAll(['effect_maps', 'variance_maps', 'stat_maps', 'zscore_maps',
+                                  'pvalue_maps', 'contrast_metadata']),
+                name='collate_{}'.format(level),
+                run_without_submitting=True)
+        else:
+            collate = pe.Node(
+                    MergeAll(['effect_maps', 'variance_maps', 'stat_maps', 'zscore_maps',
+                              'pvalue_maps', 'contrast_metadata']),
+                 name='collate_{}'.format(level),
+                 run_without_submitting=True)
 
         #
         # Plotting

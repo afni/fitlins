@@ -475,7 +475,7 @@ class FirstLevelModel(FirstLevelModel):
         return list(set(_flatten([x.keys() for x in weights])))
 
 
-class MergeAll(MergeAll):
+class AFNIMergeAll(MergeAll):
     def _list_outputs(self):
         outputs = self._outputs().get()
         for key in self._fields:
