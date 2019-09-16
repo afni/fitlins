@@ -7,6 +7,7 @@ import pandas as pd
 import subprocess as sp
 import io
 from warnings import warn
+import sys
 
 
 from nipype.interfaces.base import isdefined
@@ -52,6 +53,7 @@ class FirstLevelModel(FirstLevelModel):
         import nibabel as nb
         from nistats import design_matrix as dm
         from nistats import first_level_model as level1
+        import sys
 
         info = self.inputs.session_info
         img = nb.load(self.inputs.bold_file)
@@ -99,7 +101,7 @@ class FirstLevelModel(FirstLevelModel):
 
         contrasts = prepare_contrasts(self.inputs.contrast_info, mat.columns.tolist())
 
-        self.reml_fit(runtime, nistats_flm, img, contrasts, design_matrices=mat)
+        self.reml_fit(img,runtime,nistats_flm, contrasts, design_matrices=mat)
 
         return runtime
 
