@@ -523,7 +523,7 @@ def get_afni_design_matrix(design, contrasts, stim_labels, t_r):
         # RowTR = "{t_r}"
         # GoodList = "0..{design.shape[0] - 1}"
         # NRowFull = "{design.shape[0]}"
-        # CommandLine = "Created by fitlins, no command line used"
+        # CommandLine = "{' '.join(sys.argv)}"
         # ColumnLabels = "{column_labels}"
         # {test_info}
         # Nstim = {len(stim_labels)}
